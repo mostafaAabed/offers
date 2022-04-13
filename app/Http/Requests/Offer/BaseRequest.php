@@ -39,7 +39,7 @@ class BaseRequest extends FormRequest
                 $rules ['get'] = ['required', 'integer', 'min:1'];
                 $rules ['discount'] = ['nullable', 'integer', 'min:1'];
             }elseif($offerCategory->name == 'discount'){
-                $rules['discount'] = ['required', 'integer', 'min:1', new UniqueOfferAttrRule($offerCategory, optional($this->offer)->id)];
+                $rules['discount'] = ['required', 'integer', 'min:1', 'max:99', new UniqueOfferAttrRule($offerCategory, optional($this->offer)->id)];
             }
         }
 
