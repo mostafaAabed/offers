@@ -11,6 +11,6 @@ class OfferCategoryController extends Controller
     public function list()
     {
         $offers = OfferCategory::get();
-        return OfferCategoryResource::collection($offer);
+        return OfferCategoryResource::collection($offers);
     }
 }
