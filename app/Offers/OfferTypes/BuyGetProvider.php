@@ -91,28 +91,6 @@ class BuyGetProvider implements OfferProvider {
                 unset($products[$key]);
             }
         }
-        // for($i = $products->count() - 1; $i >= 0; $i-- )
-        // {
-
-        //     if(!isset($products[$i]))
-        //     {
-        //         continue;
-        //     }
-
-        //     if($get < $products[$i]->quantity)
-        //     {
-        //         $discount = $products[$i]->price * $get;
-        //         $products[$i]->quantity = $products[$i]->quantity - $get;
-                
-        //         $this->updateDiscount($products[$i], $discount);
-        //         break;
-        //     }else{
-        //         $get = $get - $products[$i]->quantity;
-        //         $discount = $products[$i]->price * $products[$i]->quantity;
-        //         $this->updateDiscount($products[$i], $discount);
-        //         unset($products[$i]);
-        //     }
-        // }
     }
 
     private function updateDiscount($product, $discount)

@@ -70,6 +70,12 @@ Class OfferFactory {
 
     public function getOffers()
     {
+        $products = collect([]);
+        $this->products->each(function($product) use ($products){
+            $newProduct = $product->replicate();
+            $newProduct->id = $product->id;
+            $products->push($newProduct);
+        });
         $offers = array_keys($this->offers);
         $finalOffers = [];
         foreach($offers as $offer)
@@ -79,7 +85,6 @@ Class OfferFactory {
             $this->productsAfterOffer = $this->productsAfterOffer->merge($provider->forProducts($this->offers[$offer])->getOffers());
 
         }
-        $products = $this->products;
         $total = 0;
         $discount = 0;
         foreach($products as $product)
