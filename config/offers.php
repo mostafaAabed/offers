@@ -8,7 +8,13 @@ return [
     ],
 
     'attrs' => [
-        'buy_get' => ['buy', 'get', 'discount'],
-        'discount' => ['discount'],
-    ]
+        'buy_get' => [
+            'int' => ['buy', 'get', 'discount', 'buy_discount'],
+            'str' => ['discount_type'],
+        ],
+        'discount' => [
+            'int' => ['discount'],
+            'str' => [],
+        ],
+    ],
 ];

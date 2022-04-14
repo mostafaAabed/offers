@@ -16,6 +16,11 @@ class Offer extends Model
         return $this->hasMany(OfferIntAttr::class);
     }
 
+    public function strAttr()
+    {
+        return $this->hasMany(OfferStrAttr::class);
+    }
+
     public function offerCategory()
     {
         return $this->belongsTo(OfferCategory::class);

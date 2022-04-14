@@ -36,10 +36,13 @@ class BaseRequest extends FormRequest
         {
             if($offerCategory->name == 'buy_get'){
                 $rules ['buy'] = ['required', 'integer', 'min:1', new UniqueOfferAttrRule($offerCategory, optional($this->offer)->id)];
-                $rules ['get'] = ['required', 'integer', 'min:1'];
+                $rules ['get'] = ['required', 'integer', 'min:0'];
                 $rules ['discount'] = ['nullable', 'integer', 'min:1', 'max:99'];
+                $rules ['buy_discount'] = ['nullable', 'required_if:get,0', 'integer', 'min:1'];
+                $rules ['discount_type'] = ['nullable', 'required_with:discount,buy_discount', 'string', 'in:percentage,fixed'];
             }elseif($offerCategory->name == 'discount'){
                 $rules['discount'] = ['required', 'integer', 'min:1', 'max:99', new UniqueOfferAttrRule($offerCategory, optional($this->offer)->id)];
+                $rules ['discount_type'] = ['required', 'string', 'in:percentage,fixed'];
             }
         }
 

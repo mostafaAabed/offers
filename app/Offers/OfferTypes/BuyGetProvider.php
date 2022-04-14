@@ -3,15 +3,19 @@
 namespace App\Offers\OfferTypes;
 
 use App\Models\Offer;
+use App\Offers\Traits\OfferTrait;
 use Illuminate\Support\Facades\DB;
 
 class BuyGetProvider implements OfferProvider {
+
+    use OfferTrait;
 
     protected $products;
 
     protected $discount;
 
     protected $offers;
+
 
     public function __construct()
     {
@@ -45,49 +49,64 @@ class BuyGetProvider implements OfferProvider {
             $buy = $offer->intAttr->where('name', 'buy')->first()->value;
             $get = $offer->intAttr->where('name', 'get')->first()->value;
             $discount = optional($offer->intAttr->where('name', 'discount')->first())->value;
+            $buyDiscount = optional($offer->intAttr->where('name', 'buy_discount')->first())->value;
+            $discountType = optional($offer->strAttr->where('name', 'discount_type')->first())->value;
 
             if($products->sum('quantity') < $buy + $get)
             {
                 continue;
             }
 
-            $this->removeBuy($buy, $products);
-            $this->removeGet($get, $products, $discount);
+            $this->removeBuy($buy, $products, $discountType, $buyDiscount);
+            $this->removeGet($get, $products, $discountType, $discount);
 
             $this->calculateDiscount($products);
         }
     }
 
-    private function removeBuy($buy, &$products)
+    private function removeBuy($buy, &$products, $discountType, $discount = 0)
     {
         foreach($products as $key => $product)
         {
             if($buy < $product->quantity)
             {
                 $product->quantity = $product->quantity - $buy;
+                if($discount){
+                    $discountValue = $this->discountValue($buy, $product->price, $discountType, $discount);
+                    $this->updateDiscount($product, $discountValue);
+                }
                 break;
             }else{
                 $buy = $buy - $product->quantity;
+                if($discount){
+                    $discountValue = $this->discountValue($product->quantity, $product->price, $discountType, $discount);
+                    $this->updateDiscount($product, $discountValue);
+                }
                 unset($products[$key]);
             }
         }
     }
 
-    private function removeGet($get, &$products, $offerDiscount)
+    private function removeGet($get, &$products, $discountType, $offerDiscount)
     {
         foreach($products->sortBy('price') as $key => $product)
         {
             if($get < $product->quantity)
-            {
-                $discount = $offerDiscount ? $product->price * $get * $offerDiscount / 100 : $product->price * $get;
+            {             
                 $product->quantity = $product->quantity - $get;
-                
-                $this->updateDiscount($product, $discount);
+                if($offerDiscount){
+                    dd('fds');
+                    $discountValue = $this->discountValue($get, $product->price, $discountType, $offerDiscount);
+                    $this->updateDiscount($product, $discountType, $discountValue);
+                }
                 break;
             }else{
                 $get = $get - $product->quantity;
-                $discount = $offerDiscount ? $product->price * $product->quantity * $offerDiscount / 100 : $product->price * $product->quantity;
-                $this->updateDiscount($product, $discount);
+                if($offerDiscount){
+                    dd('fds');
+                    $discountValue = $this->discountValue($product->quantity, $product->price, $discountType, $offerDiscount);
+                    $this->updateDiscount($product, $discountType, $discountValue);
+                }
                 unset($products[$key]);
             }
         }

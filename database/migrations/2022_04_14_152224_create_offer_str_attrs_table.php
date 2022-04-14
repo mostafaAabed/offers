@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOfferIntAttrsTable extends Migration
+class CreateOfferStrAttrsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateOfferIntAttrsTable extends Migration
      */
     public function up()
     {
-        Schema::create('offer_int_attrs', function (Blueprint $table) {
+        Schema::create('offer_str_attrs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('offer_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->integer('value');
+            $table->string('value');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateOfferIntAttrsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('offer_int_attrs');
+        Schema::dropIfExists('offer_str_attrs');
     }
 }

@@ -17,9 +17,16 @@ class OfferController extends Controller
         $offerCategory = OfferCategory::findOrFail($request->offer_category_id);
         $offer = Offer::create($request->validated());
         $offer->active = true;
-        $attrs = $request->only(config("offers.attrs.{$offerCategory->name}"));
-        foreach($attrs as $name => $value){
+        $int = $request->only(config("offers.attrs.{$offerCategory->name}.int"));
+        $str = $request->only(config("offers.attrs.{$offerCategory->name}.str"));
+        foreach($int as $name => $value){
             $offer->intAttr()->create([
+                'name' => $name,
+                'value' => $value,
+            ]);
+        }
+        foreach($str as $name => $value){
+            $offer->strAttr()->create([
                 'name' => $name,
                 'value' => $value,
             ]);
@@ -31,10 +38,18 @@ class OfferController extends Controller
     {
         $offerCategory = $offer->offerCategory;
         $offer->update($request->validated());
-        $attrs = $request->only(config("offers.attrs.{$offerCategory->name}"));
+        $int = $request->only(config("offers.attrs.{$offerCategory->name}.int"));
+        $str = $request->only(config("offers.attrs.{$offerCategory->name}.str"));
         $offer->intAttr()->delete();
-        foreach($attrs as $name => $value){
+        $offer->strAttr()->delete();
+        foreach($int as $name => $value){
             $offer->intAttr()->create([
+                'name' => $name,
+                'value' => $value,
+            ]);
+        }
+        foreach($str as $name => $value){
+            $offer->strAttr()->create([
                 'name' => $name,
                 'value' => $value,
             ]);

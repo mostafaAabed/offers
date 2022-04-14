@@ -27,6 +27,11 @@ class OfferResource extends JsonResource
             $data[$attr->name] = $attr->value;
         }
 
+        foreach($this->strAttr as $attr)
+        {
+            $data[$attr->name] = $attr->value;
+        }
+
         return $data;
     }
 }
