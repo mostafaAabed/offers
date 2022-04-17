@@ -96,15 +96,19 @@ class BuyGetProvider implements OfferProvider {
                 $product->quantity = $product->quantity - $get;
                 if($offerDiscount){
                     $discountValue = $this->discountValue($get, $product->price, $discountType, $offerDiscount);
-                    $this->updateDiscount($product, $discountValue);
+                }else{
+                    $discountValue = $this->discountValue($get, $product->price, 'percentage', 100);
                 }
+                $this->updateDiscount($product, $discountValue);
                 break;
             }else{
                 $get = $get - $product->quantity;
                 if($offerDiscount){
                     $discountValue = $this->discountValue($product->quantity, $product->price, $discountType, $offerDiscount);
-                    $this->updateDiscount($product, $discountValue);
+                }else{
+                    $discountValue = $this->discountValue($product->quantity, $product->price, 'percentage', 100);
                 }
+                $this->updateDiscount($product, $discountValue);
                 unset($products[$key]);
             }
         }
