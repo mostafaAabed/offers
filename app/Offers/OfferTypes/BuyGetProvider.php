@@ -23,7 +23,7 @@ class BuyGetProvider implements OfferProvider {
         $this->discount = collect([]);
         $this->offers = Offer::whereHas('offerCategory', function($query){
             $query->where('name', 'buy_get');
-        })->where('active', true)->with('intAttr')->get();
+        })->where('active', true)->with(['intAttr', 'strAttr'])->get();
         $this->offers = $this->offers->sortByDesc(function($offer){
             return $offer->intAttr->where('name', 'buy')->first()->value + 
                 $offer->intAttr->where('name', 'get')->first()->value;
@@ -95,17 +95,15 @@ class BuyGetProvider implements OfferProvider {
             {             
                 $product->quantity = $product->quantity - $get;
                 if($offerDiscount){
-                    dd('fds');
                     $discountValue = $this->discountValue($get, $product->price, $discountType, $offerDiscount);
-                    $this->updateDiscount($product, $discountType, $discountValue);
+                    $this->updateDiscount($product, $discountValue);
                 }
                 break;
             }else{
                 $get = $get - $product->quantity;
                 if($offerDiscount){
-                    dd('fds');
                     $discountValue = $this->discountValue($product->quantity, $product->price, $discountType, $offerDiscount);
-                    $this->updateDiscount($product, $discountType, $discountValue);
+                    $this->updateDiscount($product, $discountValue);
                 }
                 unset($products[$key]);
             }
