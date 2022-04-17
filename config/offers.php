@@ -5,6 +5,7 @@ return [
     'categories' => [
         'buy_get',
         'discount',
+        'bundle',
     ],
 
     'attrs' => [
@@ -14,6 +15,10 @@ return [
         ],
         'discount' => [
             'int' => ['discount'],
+            'str' => [],
+        ],
+        'bundle' => [
+            'int' => ['buy', 'price'],
             'str' => [],
         ],
     ],

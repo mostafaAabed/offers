@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Offer;
 
 use App\Rules\Offer\BuyRule;
+use App\Models\OfferIntAttr;
 use App\Models\OfferCategory;
 use App\Rules\Offer\UniqueOfferAttrRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -43,6 +44,9 @@ class BaseRequest extends FormRequest
             }elseif($offerCategory->name == 'discount'){
                 $rules['discount'] = ['required', 'integer', 'min:1', 'max:99', new UniqueOfferAttrRule($offerCategory, optional($this->offer)->id)];
                 $rules ['discount_type'] = ['required', 'string', 'in:percentage,fixed'];
+            }elseif($offerCategory->name == 'bundle'){
+                $rules['buy'] = ['required', 'integer', 'min:1'];
+                $rules ['price'] = ['required', 'integer', 'min:1'];
             }
         }
 
@@ -51,6 +55,21 @@ class BaseRequest extends FormRequest
             $rules['offer_category_id'] = ['required', 'exists:offer_categories,id'];
         }else{
             $rules['active'] = ['required', 'boolean'];
+            if($this->offer->offerCategory->name == 'bundle')
+            {
+                $productCategories = $this->offer->productCategories->pluck('id');
+                $buy = OfferIntAttr::where('name', 'buy')->whereHas('offer', function($query) use ($productCategories){
+                    $query->whereHas('offerCategory', function($query){
+                        $query->where('name', 'bundle');
+                    })
+                    ->whereHas('productCategories', function($query) use ($productCategories){
+                        $query->whereIn('product_category_id', $productCategories);
+                    })
+                    ->where('offers.id', '!=', $this->offer->id);
+                })->pluck('value');
+
+                $rules['buy'][]= 'not_in:'.$buy->join(',');
+            }
         }
 
         return $rules;

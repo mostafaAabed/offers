@@ -19,6 +19,7 @@ class TestSeeder extends Seeder
     {
         $freePieceOfferCategory = OfferCategory::where('name', 'buy_get')->firstOrFail();
         $discountOfferCategory = OfferCategory::where('name', 'discount')->firstOrFail();
+        $bundleOfferCategory = OfferCategory::where('name', 'bundle')->firstOrFail();
 
         $freePieceOffers = [
             [
@@ -77,7 +78,18 @@ class TestSeeder extends Seeder
             ],
         ];
 
-
+        $bundleOffers = [
+            [
+                'name' => 'buy_5_250',
+                'buy' => '5',
+                'price' => 250,
+            ],
+            [
+                'name' => 'buy_8_280',
+                'buy' => '8',
+                'price' => 280,
+            ],
+        ];
 
         foreach($freePieceOffers as $item){
             $offer = Offer::firstOrCreate([
@@ -131,6 +143,23 @@ class TestSeeder extends Seeder
             $offer->strAttr()->firstOrCreate(['name' => 'discount_type'], [
                 'name' => 'discount_type',
                 'value' => $item['discount_type'],
+            ]);
+        }
+
+        foreach($bundleOffers as $item){
+            $offer = Offer::firstOrCreate([
+                'name' => $item['name'],
+                'offer_category_id' => $bundleOfferCategory->id,
+            ]);
+
+            $offer->intAttr()->firstOrCreate(['name' => 'buy'], [
+                'name' => 'buy',
+                'value' => $item['buy'],
+            ]);
+
+            $offer->intAttr()->firstOrCreate(['name' => 'price'], [
+                'name' => 'price',
+                'value' => $item['price'],
             ]);
         }
 
