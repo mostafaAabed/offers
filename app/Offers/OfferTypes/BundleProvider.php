@@ -31,7 +31,7 @@ class BundleProvider implements OfferProvider {
 
     public function forProducts($products)
     {
-        $products->each(function($product, $i){
+        $products->sortByDesc('price')->each(function($product, $i){
             $this->classifyProductToOffer($product);
         });
         
@@ -72,12 +72,12 @@ class BundleProvider implements OfferProvider {
             {
                 $product->quantity = $product->quantity - $buy;
                 $discountValue = $this->discountValue($buy, $product->price, 'fixed', $product->price - $priceInOffer);
-                $this->updateDiscount($product, $discountValue);
+                $this->updateDiscount($product, round($discountValue));
                 break;
             }else{
                 $buy = $buy - $product->quantity;
                 $discountValue = $this->discountValue($product->quantity, $product->price, 'fixed', $product->price - $priceInOffer);
-                $this->updateDiscount($product, $discountValue);
+                $this->updateDiscount($product, round($discountValue));
                 $product->quantity = 0;
                 unset($products[$key]);
             }
