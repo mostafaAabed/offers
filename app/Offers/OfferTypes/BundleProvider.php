@@ -31,7 +31,7 @@ class BundleProvider implements OfferProvider {
 
     public function forProducts($products)
     {
-        $products->sortByDesc('price')->each(function($product, $i){
+        $products->sortBy('price')->each(function($product, $i){
             $this->classifyProductToOffer($product);
         });
         
